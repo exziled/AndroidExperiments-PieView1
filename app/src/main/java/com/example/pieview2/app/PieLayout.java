@@ -8,18 +8,18 @@ import android.view.ViewGroup;
 /**
  * Created by bcarlson on 6/22/14.
  */
-public class PieView extends ViewGroup {
+public class PieLayout extends ViewGroup {
     private int mRadius = 200;
 
-    public PieView(Context context) {
+    public PieLayout(Context context) {
     super(context);
 }
 
-    public PieView(Context context, AttributeSet attrs) {
+    public PieLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public PieView(Context context, AttributeSet attrs, int defStyle) {
+    public PieLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 

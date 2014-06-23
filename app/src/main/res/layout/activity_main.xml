@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content" />
 
-    <com.example.pieview2.app.PieView
+    <com.example.pieview2.app.PieLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -35,6 +35,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Wut?"/>
-    </com.example.pieview2.app.PieView>
+    </com.example.pieview2.app.PieLayout>
 
 </RelativeLayout>
