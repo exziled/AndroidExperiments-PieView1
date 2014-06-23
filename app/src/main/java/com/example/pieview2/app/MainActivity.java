@@ -2,16 +2,39 @@ package com.example.pieview2.app;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.TextView;
 
 
 public class MainActivity extends ActionBarActivity {
+    private PieLayout mPieLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        mPieLayout = (PieLayout)findViewById(R.id.pieLayout);
+
+        mPieLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.v("PieLayout", "Clicked Something: " + view.getId());
+
+            }
+        });
+
+        Button testText = (Button)findViewById(R.id.tv1);
+        testText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.v("PieLayout", "Tv 1 Clicked");
+            }
+        });
     }
 
 

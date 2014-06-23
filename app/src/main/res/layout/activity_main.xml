@@ -15,26 +15,31 @@
 
     <com.example.pieview2.app.PieLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/pieLayout">
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ohaidere"/>
-        <TextView
+            android:text="Ohaidere"
+            android:id="@+id/tv1"/>
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Yay"/>
+            android:text="Yay"
+            android:id="@+id/tv2"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Haha"/>
+            android:text="Haha"
+            android:id="@+id/tv3"/>
 
-        <TextView
+        <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Wut?"/>
+            android:text="Wut?"
+            android:id="@+id/tv4"/>
     </com.example.pieview2.app.PieLayout>
 
 </RelativeLayout>

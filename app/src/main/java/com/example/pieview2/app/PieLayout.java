@@ -9,7 +9,6 @@ import android.view.ViewGroup;
  * Created by bcarlson on 6/22/14.
  */
 public class PieLayout extends ViewGroup {
-    private int mRadius = 200;
 
     public PieLayout(Context context) {
     super(context);
@@ -35,6 +34,13 @@ public class PieLayout extends ViewGroup {
         final int childWidth = childRight - childLeft;
         final int childHeight = childBottom - childTop;
 
+        final int radius;
+        if (this.getMeasuredWidth() > this.getMeasuredHeight()) {
+            radius = this.getMeasuredHeight() / 2 - 100;
+        } else {
+            radius = this.getMeasuredWidth() / 2 - 100;
+        }
+
         // Number of degrees between each child view
         final float degreeSpacing = 360.0f / count;
 
@@ -58,8 +64,8 @@ public class PieLayout extends ViewGroup {
             // based on angle and radius.  Angle is determined by child number
             // and angle spacing (360 / number of children)
             final double rad = Math.toRadians(degreeSpacing * i);
-            int viewX = viewCenterX + mRadius * (int)Math.cos(rad);
-            int viewY = viewCenterY + mRadius * (int)Math.sin(rad);
+            int viewX = viewCenterX + radius * (int)Math.cos(rad);
+            int viewY = viewCenterY + radius * (int)Math.sin(rad);
 
             // Call to layout child view
             child.layout(viewX, viewY, viewX + curWidth, viewY + curHeight);
