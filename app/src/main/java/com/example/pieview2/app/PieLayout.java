@@ -41,6 +41,7 @@ public class PieLayout extends ViewGroup {
             radius = this.getMeasuredWidth() / 2 - 100;
         }
 
+
         // Number of degrees between each child view
         final float degreeSpacing = 360.0f / count;
 
@@ -52,8 +53,8 @@ public class PieLayout extends ViewGroup {
             View child = getChildAt(i);
 
             // Get the width and height requested by the child
-            child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.AT_MOST),
-                          MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.AT_MOST));
+            child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.UNSPECIFIED),
+                          MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.UNSPECIFIED));
 
             // Use this in the child.layout() call to set the width (right - left)
             // and height (bottom-top) of the child
@@ -68,7 +69,7 @@ public class PieLayout extends ViewGroup {
             int viewY = viewCenterY + radius * (int)Math.sin(rad);
 
             // Call to layout child view
-            child.layout(viewX, viewY, viewX + curWidth, viewY + curHeight);
+            child.layout(viewCenterX - radius, viewCenterY - radius, viewCenterX + radius, viewCenterY + radius);
         }
     }
 }
