@@ -26,49 +26,30 @@ public class PieLayout extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = getChildCount();
 
-        int curWidth, curHeight;
-        final int childLeft = this.getPaddingLeft();
-        final int childRight = this.getMeasuredWidth() - this.getPaddingRight();
-        final int childTop = this.getPaddingTop();
-        final int childBottom = this.getMeasuredHeight() - this.getPaddingBottom();
-        final int childWidth = childRight - childLeft;
-        final int childHeight = childBottom - childTop;
 
         final int radius;
         if (this.getMeasuredWidth() > this.getMeasuredHeight()) {
-            radius = this.getMeasuredHeight() / 2 - 100;
+            radius = this.getMeasuredHeight() / 2;
         } else {
-            radius = this.getMeasuredWidth() / 2 - 100;
+            radius = this.getMeasuredWidth() / 2;
         }
-
-
-        // Number of degrees between each child view
-        final float degreeSpacing = 360.0f / count;
 
         // As the PieView spirals out from the center, find the center of our view
         final int viewCenterX = this.getMeasuredWidth() / 2;
         final int viewCenterY = this.getMeasuredHeight() / 2;
 
         for (int i = 0; i < count; i++) {
-            View child = getChildAt(i);
+            PieSlice child = (PieSlice)getChildAt(i);
+            //View child = getChildAt(i);
 
+            child.initSlice(i, count);
             // Get the width and height requested by the child
-            child.measure(MeasureSpec.makeMeasureSpec(childWidth, MeasureSpec.UNSPECIFIED),
-                          MeasureSpec.makeMeasureSpec(childHeight, MeasureSpec.UNSPECIFIED));
+            child.measure(MeasureSpec.makeMeasureSpec(this.getMeasuredWidth(), MeasureSpec.UNSPECIFIED),
+                          MeasureSpec.makeMeasureSpec(this.getMeasuredHeight(), MeasureSpec.UNSPECIFIED));
 
-            // Use this in the child.layout() call to set the width (right - left)
-            // and height (bottom-top) of the child
-            curWidth = child.getMeasuredWidth();
-            curHeight = child.getMeasuredHeight();
 
-            // Determines the cx and cy positions of the child view
-            // based on angle and radius.  Angle is determined by child number
-            // and angle spacing (360 / number of children)
-            final double rad = Math.toRadians(degreeSpacing * i);
-            int viewX = viewCenterX + radius * (int)Math.cos(rad);
-            int viewY = viewCenterY + radius * (int)Math.sin(rad);
-
-            // Call to layout child view
+            // Layout the child view but give them the entire pie's area.  If we don't do this, there isn't enough room
+            // to draw the slice shape of each pie slice.
             child.layout(viewCenterX - radius, viewCenterY - radius, viewCenterX + radius, viewCenterY + radius);
         }
     }

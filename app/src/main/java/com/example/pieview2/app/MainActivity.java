@@ -28,7 +28,7 @@ public class MainActivity extends ActionBarActivity {
             }
         });
 
-        Button testText = (Button)findViewById(R.id.tv1);
+        PieSlice testText = (PieSlice)findViewById(R.id.ps1);
         testText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

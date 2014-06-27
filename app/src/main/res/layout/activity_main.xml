@@ -14,31 +14,34 @@
         android:layout_height="wrap_content" />
 
     <com.example.pieview2.app.PieLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:id="@+id/pieLayout">
 
         <com.example.pieview2.app.PieSlice
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+        android:id="@+id/ps1"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Yay"
-            android:id="@+id/tv1"/>
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps2"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Haha"
-            android:id="@+id/tv3"/>
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps3"/>
 
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Wut?"
-            android:id="@+id/tv4"/>
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps4"/>
+
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps5"/>
     </com.example.pieview2.app.PieLayout>
 
 </RelativeLayout>
