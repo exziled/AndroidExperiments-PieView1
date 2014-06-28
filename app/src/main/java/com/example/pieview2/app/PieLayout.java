@@ -42,7 +42,7 @@ public class PieLayout extends ViewGroup {
             PieSlice child = (PieSlice)getChildAt(i);
             //View child = getChildAt(i);
 
-            child.initSlice(i, count, viewCenterX, viewCenterY);
+            child.initSlice(i, count);
             // Get the width and height requested by the child
             child.measure(MeasureSpec.makeMeasureSpec(radius * 2, MeasureSpec.UNSPECIFIED),
                           MeasureSpec.makeMeasureSpec(radius *2, MeasureSpec.UNSPECIFIED));

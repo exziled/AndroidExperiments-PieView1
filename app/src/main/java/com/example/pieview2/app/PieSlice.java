@@ -4,7 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Path;
+import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -15,16 +15,12 @@ import android.view.View;
  * Created by bcarlson on 6/22/14.
  */
 public class PieSlice extends View {
-    private Paint mPaintSlice;
-
-    private int mId;
+    private int sliceId;
     private float mStartAngle;
-    private int mCount;
+    private float mEndAngle;
 
-    private int mCx;
-    private int mCy;
-
-    private Canvas mCanvas;
+    private Triangle mBounds;
+    private Paint mPaintSlice;
 
     public PieSlice(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -38,22 +34,51 @@ public class PieSlice extends View {
         super(context);
     }
 
-    @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        Log.v("PieSlice", "Left: " + left + " Top: " + top + " Right: " + right + "Bottom: " + bottom);
 
-        super.onLayout(changed, left, top, right, bottom);
+    public class Triangle
+    {
+        private PointF p0;
+        private PointF p1;
+        private PointF p2;
+
+        private float area;
+        private int sign;
+
+        public Triangle(PointF p0, PointF p1, PointF p2) {
+            this.p0 = p0;
+            this.p1 = p1;
+            this.p2 = p2;
+
+            area = 0.5f * (-p1.y*p2.x + p0.y*(-p1.x + p2.x) + p0.x*(p1.y - p2.y) + p1.x+p2.y);
+            sign = area < 0 ? -1 : 1;
+        }
+
+        public boolean isInside(PointF pCheck) {
+            float s = ( p0.y*p2.x - p0.x*p2.y + (p2.y-p0.y)*pCheck.x + (p0.x - p2.x)*pCheck.y) * (float)sign;
+            float t = ( p0.x*p1.y - p0.y*p1.x + (p0.y-p1.y)*pCheck.x + (p1.x - p0.x)*pCheck.y) * (float)sign;
+
+            return (s > 0 && t > 0 && (s + t) < (2 * area * sign));
+        }
+
     }
 
-    public void initSlice(int id, int count, int cx, int cy)
+    public void initSlice(int id, int count)
     {
-        mId = id;
-        mCount = count;
-        mStartAngle = id * (360.0f / count);
+        sliceId = id;
+
+        float angleSpan = 360.0f / count;
+        mStartAngle = id * angleSpan;
+        mEndAngle = mStartAngle + angleSpan;
+
         mPaintSlice = new Paint();
 
-        mCx = cx;
-        mCy = cy;
+        float radius = this.getMeasuredWidth()/2;
+        PointF p0 = new PointF(radius, radius);
+        PointF p1 = new PointF( radius + (float)(radius * Math.cos(Math.toRadians(mStartAngle))),
+                                radius - (float)(radius * Math.sin(Math.toRadians(mStartAngle))));
+        PointF p2 = new PointF( radius + (float)(radius * Math.cos(Math.toRadians(mEndAngle))),
+                                radius - (float)(radius * Math.sin(Math.toRadians(mEndAngle))));
+        mBounds = new Triangle(p0, p1, p2);
     }
 
 
@@ -67,7 +92,6 @@ public class PieSlice extends View {
         Log.v("PieSlice", "OnMeasure - w: " + widthSize + " h: " + heightSize);
         setMeasuredDimension(widthSize, heightSize);
 
-        //super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -75,31 +99,7 @@ public class PieSlice extends View {
         float eventX = event.getX();
         float eventY = event.getY();
 
-        int radius = this.getMeasuredHeight()/2;
-
-        float cy = radius;
-        float cx = radius;
-
-        float cornerX1 = cx + (float)(radius * Math.cos(Math.toRadians(mStartAngle)));
-        float cornerY1 = cy - (float)(radius * Math.sin(Math.toRadians(mStartAngle)));
-
-        float cornerX2 = cx + (float)(radius * Math.cos(Math.toRadians(mStartAngle + (360.0f / mCount))));
-        float cornerY2 = cy - (float)(radius * Math.sin(Math.toRadians(mStartAngle + (360.0f / mCount))));
-
-
-        //Log.v("PieSlice", String.format("Click X: %f, Y: %f", eventX, eventY));
-        //Log.v("PieSlice", String.format("Slice: %d - X0: %f Y0: %f X1: %f Y1: %f X2: %f Y2: %f", mId, cx, cy, cornerX1, cornerY1, cornerX2, cornerY2));
-
-        float temp = (-1.0f*cornerY1*cornerX2 + cy*(-1.0f*cornerX1 + cornerX2) + cx*(cornerY1 - cornerY2) + cornerX1*cornerY2);
-        float area = 0.5f*temp;
-
-        float sign = area < 0 ? -1.0f : 1.0f;
-        float s = ((cy*cornerX2 - cx*cornerY2 + (cornerY2 - cy)*eventX + (cx - cornerX2)*eventY)) * sign;
-        float t = ((cx*cornerY1 - cy*cornerX1 + (cy - cornerY1)*eventX + (cornerX1 - cx)*eventY)) * sign;
-
-        //Log.v("PieSlice", "S: " + s + " T: " + t + " Area: " + area);
-
-        if (s > 0 && t > 0 && (s+t) < (2 * area * sign)) {
+        if (mBounds.isInside(new PointF(eventX, eventY))) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     Log.v("PieSlice", "ActionDown");
@@ -117,20 +117,12 @@ public class PieSlice extends View {
         }
     }
 
-
-//    @Override
-//    public void setOnClickListener(OnClickListener l) {
-//        Log.v("PieSlice", "Setting OnClick listener for" + mId);
-//        super.setOnClickListener(l);
-//    }
-
     @Override
     protected void onDraw(Canvas canvas) {
         Log.v("PieSlice", "OnDraw Called");
 
-        mCanvas = canvas;
-
-        RectF rect = new RectF(0, 0, 650, 650);
+        int padding = 10;
+        RectF rect = new RectF(padding, padding, this.getMeasuredHeight() - padding, this.getMeasuredWidth() - padding);
 
         mPaintSlice.setColor(Color.GREEN);
         mPaintSlice.setStrokeWidth(20);
@@ -139,10 +131,9 @@ public class PieSlice extends View {
         mPaintSlice.setStyle(Paint.Style.STROKE);
 
         //canvas.drawOval(rect, mPaintSlice);
-        float start = mStartAngle;
-        float end = 360.0f / mCount;
-        Log.v("Draw", "Drawing: " + start + " - " + end);
-        canvas.drawArc(rect, start, end, true, mPaintSlice);
+        Log.v("Draw", "Drawing: " + mStartAngle + " - " + mEndAngle);
+
+        canvas.drawArc(rect, mStartAngle, mStartAngle - mEndAngle, true, mPaintSlice);
 
     }
 }
