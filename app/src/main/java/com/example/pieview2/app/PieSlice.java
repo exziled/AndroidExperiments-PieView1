@@ -77,26 +77,29 @@ public class PieSlice extends View {
 
         int radius = this.getMeasuredHeight()/2;
 
-        int cy = radius;
-        int cx = radius;
+        float cy = radius;
+        float cx = radius;
 
-        int cornerX1 = cx + (int)(radius * Math.cos(Math.toRadians(mStartAngle)));
-        int cornerY1 = cy - (int)(radius * Math.sin(Math.toRadians(mStartAngle)));
+        float cornerX1 = cx + (float)(radius * Math.cos(Math.toRadians(mStartAngle)));
+        float cornerY1 = cy - (float)(radius * Math.sin(Math.toRadians(mStartAngle)));
 
-        int cornerX2 = cx + (int)(radius * Math.cos(Math.toRadians(mStartAngle + (360.0f / mCount))));
-        int cornerY2 = cy - (int)(radius * Math.sin(Math.toRadians(mStartAngle + (360.0f / mCount))));
+        float cornerX2 = cx + (float)(radius * Math.cos(Math.toRadians(mStartAngle + (360.0f / mCount))));
+        float cornerY2 = cy - (float)(radius * Math.sin(Math.toRadians(mStartAngle + (360.0f / mCount))));
 
 
-        Log.v("PieSlice", String.format("Click X: %f, Y: %f", eventX, eventY));
-        Log.v("PieSlice", String.format("Slice: %d - X0: %d Y0: %d X1: %d Y1: %d X2: %d Y2: %d", mId, cx, cy, cornerX1, cornerY1, cornerX2, cornerY2));
+        //Log.v("PieSlice", String.format("Click X: %f, Y: %f", eventX, eventY));
+        //Log.v("PieSlice", String.format("Slice: %d - X0: %f Y0: %f X1: %f Y1: %f X2: %f Y2: %f", mId, cx, cy, cornerX1, cornerY1, cornerX2, cornerY2));
 
-        float area = 1/(2*(-1*cornerX1*cornerX2 + cy*(-1*cornerX1 + cornerX2) + cx*(cornerY1 - cornerY2) + cornerX1*cornerY2));
-        float s = 1/((2*area)*(cy*cornerX2 - cx*cornerY2 + (cornerY2 - cy)*eventX + (cx - cornerY2)*eventY));
-        float t = 1/((2*area)*(cx*cornerY1 - cy*cornerX2 + (cy - cornerY1)*eventX + (cornerX1 - cx)*eventY));
+        float temp = (-1.0f*cornerY1*cornerX2 + cy*(-1.0f*cornerX1 + cornerX2) + cx*(cornerY1 - cornerY2) + cornerX1*cornerY2);
+        float area = 0.5f*temp;
 
-        Log.v("PieSlice", "S: " + s + " T: " + t + " Area: " + area);
+        float sign = area < 0 ? -1.0f : 1.0f;
+        float s = ((cy*cornerX2 - cx*cornerY2 + (cornerY2 - cy)*eventX + (cx - cornerX2)*eventY)) * sign;
+        float t = ((cx*cornerY1 - cy*cornerX1 + (cy - cornerY1)*eventX + (cornerX1 - cx)*eventY)) * sign;
 
-        if (s > 0 && t > 0 && (1-s-t) > 1) {
+        //Log.v("PieSlice", "S: " + s + " T: " + t + " Area: " + area);
+
+        if (s > 0 && t > 0 && (s+t) < (2 * area * sign)) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
                     Log.v("PieSlice", "ActionDown");
