@@ -8,6 +8,7 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 
 /**
@@ -19,6 +20,11 @@ public class PieSlice extends View {
     private int mId;
     private float mStartAngle;
     private int mCount;
+
+    private int mCx;
+    private int mCy;
+
+    private Canvas mCanvas;
 
     public PieSlice(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -39,12 +45,15 @@ public class PieSlice extends View {
         super.onLayout(changed, left, top, right, bottom);
     }
 
-    public void initSlice(int id, int count)
+    public void initSlice(int id, int count, int cx, int cy)
     {
         mId = id;
         mCount = count;
         mStartAngle = id * (360.0f / count);
         mPaintSlice = new Paint();
+
+        mCx = cx;
+        mCy = cy;
     }
 
 
@@ -62,9 +71,61 @@ public class PieSlice extends View {
     }
 
     @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        float eventX = event.getX();
+        float eventY = event.getY();
+
+        int radius = this.getMeasuredHeight()/2;
+
+        int cy = radius;
+        int cx = radius;
+
+        int cornerX1 = cx + (int)(radius * Math.cos(Math.toRadians(mStartAngle)));
+        int cornerY1 = cy - (int)(radius * Math.sin(Math.toRadians(mStartAngle)));
+
+        int cornerX2 = cx + (int)(radius * Math.cos(Math.toRadians(mStartAngle + (360.0f / mCount))));
+        int cornerY2 = cy - (int)(radius * Math.sin(Math.toRadians(mStartAngle + (360.0f / mCount))));
+
+
+        Log.v("PieSlice", String.format("Click X: %f, Y: %f", eventX, eventY));
+        Log.v("PieSlice", String.format("Slice: %d - X0: %d Y0: %d X1: %d Y1: %d X2: %d Y2: %d", mId, cx, cy, cornerX1, cornerY1, cornerX2, cornerY2));
+
+        float area = 1/(2*(-1*cornerX1*cornerX2 + cy*(-1*cornerX1 + cornerX2) + cx*(cornerY1 - cornerY2) + cornerX1*cornerY2));
+        float s = 1/((2*area)*(cy*cornerX2 - cx*cornerY2 + (cornerY2 - cy)*eventX + (cx - cornerY2)*eventY));
+        float t = 1/((2*area)*(cx*cornerY1 - cy*cornerX2 + (cy - cornerY1)*eventX + (cornerX1 - cx)*eventY));
+
+        Log.v("PieSlice", "S: " + s + " T: " + t + " Area: " + area);
+
+        if (s > 0 && t > 0 && (1-s-t) > 1) {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    Log.v("PieSlice", "ActionDown");
+                    this.performClick();
+                    return false;
+                case MotionEvent.ACTION_MOVE:
+                    return true;
+                case MotionEvent.ACTION_UP:
+                    return true;
+                default:
+                    return true;
+            }
+        } else {
+            return false;
+        }
+    }
+
+
+//    @Override
+//    public void setOnClickListener(OnClickListener l) {
+//        Log.v("PieSlice", "Setting OnClick listener for" + mId);
+//        super.setOnClickListener(l);
+//    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         Log.v("PieSlice", "OnDraw Called");
 
+        mCanvas = canvas;
 
         RectF rect = new RectF(0, 0, 650, 650);
 

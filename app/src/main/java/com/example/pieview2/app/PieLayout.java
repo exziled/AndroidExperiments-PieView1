@@ -42,10 +42,10 @@ public class PieLayout extends ViewGroup {
             PieSlice child = (PieSlice)getChildAt(i);
             //View child = getChildAt(i);
 
-            child.initSlice(i, count);
+            child.initSlice(i, count, viewCenterX, viewCenterY);
             // Get the width and height requested by the child
-            child.measure(MeasureSpec.makeMeasureSpec(this.getMeasuredWidth(), MeasureSpec.UNSPECIFIED),
-                          MeasureSpec.makeMeasureSpec(this.getMeasuredHeight(), MeasureSpec.UNSPECIFIED));
+            child.measure(MeasureSpec.makeMeasureSpec(radius * 2, MeasureSpec.UNSPECIFIED),
+                          MeasureSpec.makeMeasureSpec(radius *2, MeasureSpec.UNSPECIFIED));
 
 
             // Layout the child view but give them the entire pie's area.  If we don't do this, there isn't enough room

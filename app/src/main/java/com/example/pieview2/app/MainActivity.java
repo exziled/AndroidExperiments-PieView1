@@ -35,6 +35,14 @@ public class MainActivity extends ActionBarActivity {
                 Log.v("PieLayout", "Tv 1 Clicked");
             }
         });
+
+        PieSlice testText2 = (PieSlice)findViewById(R.id.ps2);
+        testText2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.v("PieLayout", "Tv 2 Clicked");
+            }
+        });
     }
 
 
