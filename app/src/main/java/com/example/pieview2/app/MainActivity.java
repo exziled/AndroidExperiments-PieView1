@@ -20,29 +20,35 @@ public class MainActivity extends ActionBarActivity {
 
         mPieLayout = (PieLayout)findViewById(R.id.pieLayout);
 
-        mPieLayout.setOnClickListener(new View.OnClickListener() {
+        final TextView textView = (TextView)findViewById(R.id.testText);
+
+        PieSlice slice1 = (PieSlice)findViewById(R.id.ps1);
+        slice1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v("PieLayout", "Clicked Something: " + view.getId());
+                textView.setText("Slice 1");
 
             }
         });
 
-        PieSlice testText = (PieSlice)findViewById(R.id.ps1);
-        testText.setOnClickListener(new View.OnClickListener() {
+        PieSlice slice2 = (PieSlice)findViewById(R.id.ps2);
+        slice2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v("PieLayout", "Tv 1 Clicked");
+                textView.setText("Slice 2");
+
             }
         });
 
-        PieSlice testText2 = (PieSlice)findViewById(R.id.ps2);
-        testText2.setOnClickListener(new View.OnClickListener() {
+        PieSlice slice3 = (PieSlice)findViewById(R.id.ps3);
+        slice3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.v("PieLayout", "Tv 2 Clicked");
+                textView.setText("Slice 3");
+
             }
         });
+
     }
 
 

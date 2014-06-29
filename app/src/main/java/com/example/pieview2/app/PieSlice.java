@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
 import android.util.AttributeSet;
@@ -16,25 +17,45 @@ import android.view.View;
  */
 public class PieSlice extends View {
     private int sliceId;
+    private int namedId;
     private float mStartAngle;
     private float mEndAngle;
 
     private Triangle mBounds;
     private Paint mPaintSlice;
+    private Paint mPaintText = new Paint();
+    private String mDisplayText;
+
 
     public PieSlice(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+
+        namedId = this.getId();
+        mPaintSlice = new Paint();
     }
 
     public PieSlice(Context context, AttributeSet attrs) {
         super(context, attrs);
+
+        namedId = this.getId();
+        mPaintSlice = new Paint();
     }
 
     public PieSlice(Context context) {
         super(context);
+
+        namedId = this.getId();
+        mPaintSlice = new Paint();
     }
 
+    @Override
+    public String toString() {
+        return String.format("PieSlice-%d", sliceId);
+    }
 
+    /**
+     * Generic class which defines a triangle object as used by the PieSlice class.
+     */
     public class Triangle
     {
         private PointF p0;
@@ -44,6 +65,15 @@ public class PieSlice extends View {
         private float area;
         private int sign;
 
+        /**
+         * Initialize a Triangle Object with any three points.  Method will also calculate the area
+         * of the defined triangle.
+         *
+         * @param p0    Any Point
+         * @param p1    Any Point
+         * @param p2    Any Point
+         *
+         */
         public Triangle(PointF p0, PointF p1, PointF p2) {
             this.p0 = p0;
             this.p1 = p1;
@@ -53,6 +83,14 @@ public class PieSlice extends View {
             sign = area < 0 ? -1 : 1;
         }
 
+        /**
+         * Determine if an xy grid point lies within the defined triangle.  Uses barycentric coordinates
+         * for all calculations
+         *
+         * @param pCheck    Point to check against
+         * @return          True if point lies within triangle, false otherwise
+         *
+         */
         public boolean isInside(PointF pCheck) {
             float s = ( p0.y*p2.x - p0.x*p2.y + (p2.y-p0.y)*pCheck.x + (p0.x - p2.x)*pCheck.y) * (float)sign;
             float t = ( p0.x*p1.y - p0.y*p1.x + (p0.y-p1.y)*pCheck.x + (p1.x - p0.x)*pCheck.y) * (float)sign;
@@ -60,17 +98,37 @@ public class PieSlice extends View {
             return (s > 0 && t > 0 && (s + t) < (2 * area * sign));
         }
 
+        public Point getSpan() {
+            return new Point((int)p2.x, (int)p2.y);
+        }
+
+        public Point getStart() {
+            return new Point((int)p1.x, (int)p1.y);
+        }
+
+        @Override
+        public String toString() {
+            return String.format("0:(%f, %f) 1:(%f, %f) 2:(%f, %f)", p0.x, p0.y, p1.x, p1.y, p2.x, p2.y);
+        }
+
     }
 
-    public void initSlice(int id, int count)
+    /**
+     * Tell a PieSlice about the state of the parent PieLayout
+     *
+     * @param id        Slice identifier in total pie.  Used to set relative angular position
+     * @param count     Total number of slices in pie.  Used to set angular span.
+     *
+     */
+    public void initSlice(int id, int count, int slicePadding)
     {
         sliceId = id;
 
-        float angleSpan = 360.0f / count;
-        mStartAngle = id * angleSpan;
-        mEndAngle = mStartAngle + angleSpan;
+        //Log.v("PieSlice", String.format("Init Slice %d", id));
 
-        mPaintSlice = new Paint();
+        float angleSpan = (360.0f / count);
+        mStartAngle = id * angleSpan;
+        mEndAngle = mStartAngle + (angleSpan - slicePadding);
 
         float radius = this.getMeasuredWidth()/2;
         PointF p0 = new PointF(radius, radius);
@@ -79,17 +137,31 @@ public class PieSlice extends View {
         PointF p2 = new PointF( radius + (float)(radius * Math.cos(Math.toRadians(mEndAngle))),
                                 radius - (float)(radius * Math.sin(Math.toRadians(mEndAngle))));
         mBounds = new Triangle(p0, p1, p2);
+
+        //Log.v(this.toString(), mBounds.toString());
+
+        mPaintSlice.setColor(Color.GREEN);
+        mPaintSlice.setAntiAlias(true);
+
+        mPaintText.setColor(Color.BLACK);
+        mPaintText.setTextSize(20);
+
+        mDisplayText = String.format("%d", sliceId);
     }
 
-
+    /**
+     * Override onMeasure to ensure each PieSlice is given the exact same dimensions, the same
+     * dimensions as the parent layout.  This results in multiple layers of overlapping canvas.
+     *
+     * @param widthMeasureSpec      Parents specified width
+     * @param heightMeasureSpec     Parents specified height
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightMode = MeasureSpec.getMode(heightMeasureSpec);
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
 
-        Log.v("PieSlice", "OnMeasure - w: " + widthSize + " h: " + heightSize);
+        //Log.v("PieSlice", "OnMeasure - w: " + widthSize + " h: " + heightSize);
         setMeasuredDimension(widthSize, heightSize);
 
     }
@@ -99,15 +171,22 @@ public class PieSlice extends View {
         float eventX = event.getX();
         float eventY = event.getY();
 
+        // From here, only execute a click operation if the tapped point is within the bounds of
+        // this slice.
         if (mBounds.isInside(new PointF(eventX, eventY))) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    Log.v("PieSlice", "ActionDown");
-                    this.performClick();
-                    return false;
+                    mDisplayText = "Test";
+                    mPaintSlice.setColor(Color.BLUE);
+                    this.invalidate();
+                    //this.callOnClick();
+                    return true;
                 case MotionEvent.ACTION_MOVE:
                     return true;
                 case MotionEvent.ACTION_UP:
+                    mPaintSlice.setColor(Color.GREEN);
+                    mDisplayText = String.format("%d", sliceId);
+                    this.invalidate();
                     return true;
                 default:
                     return true;
@@ -119,21 +198,17 @@ public class PieSlice extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        Log.v("PieSlice", "OnDraw Called");
-
+        //Log.v("PieSlice", String.format("Called Draw on %d", sliceId));
         int padding = 10;
         RectF rect = new RectF(padding, padding, this.getMeasuredHeight() - padding, this.getMeasuredWidth() - padding);
 
-        mPaintSlice.setColor(Color.GREEN);
-        mPaintSlice.setStrokeWidth(20);
-        mPaintSlice.setAntiAlias(true);
-        mPaintSlice.setStrokeCap(Paint.Cap.ROUND);
-        mPaintSlice.setStyle(Paint.Style.STROKE);
+        //canvas.drawText(String.format("%s.2",mDisplayText), mBounds.getSpan().x, mBounds.getSpan().y, mPaintText);
+        //canvas.drawText(String.format("%s.1",mDisplayText), mBounds.getStart().x, mBounds.getStart().y, mPaintText);
 
-        //canvas.drawOval(rect, mPaintSlice);
-        Log.v("Draw", "Drawing: " + mStartAngle + " - " + mEndAngle);
+        //Log.v("PieSlice", String.format("Start Angle: %f, Angle Span: %f", mStartAngle, mStartAngle - mEndAngle));
 
-        canvas.drawArc(rect, mStartAngle, mStartAngle - mEndAngle, true, mPaintSlice);
+        canvas.drawArc(rect, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
+
 
     }
 }
