@@ -34,45 +34,6 @@
             android:layout_height="match_parent"
             android:id="@+id/ps3"/>
 
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps4"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps5"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps6"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps7"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps8"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps9"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps10"/>
-
-        <com.example.pieview2.app.PieSlice
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/ps11"/>
 
     </com.example.pieview2.app.PieLayout>
 

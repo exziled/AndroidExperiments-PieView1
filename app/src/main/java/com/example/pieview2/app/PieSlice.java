@@ -17,12 +17,11 @@ import android.view.View;
  */
 public class PieSlice extends View {
     private int sliceId;
-    private int namedId;
     private float mStartAngle;
     private float mEndAngle;
 
     private Triangle mBounds;
-    private Paint mPaintSlice;
+    private Paint mPaintSlice = new Paint();
     private Paint mPaintText = new Paint();
     private String mDisplayText;
 
@@ -30,22 +29,14 @@ public class PieSlice extends View {
     public PieSlice(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
-        namedId = this.getId();
-        mPaintSlice = new Paint();
     }
 
     public PieSlice(Context context, AttributeSet attrs) {
         super(context, attrs);
-
-        namedId = this.getId();
-        mPaintSlice = new Paint();
     }
 
     public PieSlice(Context context) {
         super(context);
-
-        namedId = this.getId();
-        mPaintSlice = new Paint();
     }
 
     @Override
@@ -176,16 +167,14 @@ public class PieSlice extends View {
         if (mBounds.isInside(new PointF(eventX, eventY))) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    mDisplayText = "Test";
                     mPaintSlice.setColor(Color.BLUE);
                     this.invalidate();
-                    //this.callOnClick();
-                    return true;
+                    return this.callOnClick();
+                    //return true;
                 case MotionEvent.ACTION_MOVE:
                     return true;
                 case MotionEvent.ACTION_UP:
                     mPaintSlice.setColor(Color.GREEN);
-                    mDisplayText = String.format("%d", sliceId);
                     this.invalidate();
                     return true;
                 default:
@@ -201,11 +190,6 @@ public class PieSlice extends View {
         //Log.v("PieSlice", String.format("Called Draw on %d", sliceId));
         int padding = 10;
         RectF rect = new RectF(padding, padding, this.getMeasuredHeight() - padding, this.getMeasuredWidth() - padding);
-
-        //canvas.drawText(String.format("%s.2",mDisplayText), mBounds.getSpan().x, mBounds.getSpan().y, mPaintText);
-        //canvas.drawText(String.format("%s.1",mDisplayText), mBounds.getStart().x, mBounds.getStart().y, mPaintText);
-
-        //Log.v("PieSlice", String.format("Start Angle: %f, Angle Span: %f", mStartAngle, mStartAngle - mEndAngle));
 
         canvas.drawArc(rect, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
 

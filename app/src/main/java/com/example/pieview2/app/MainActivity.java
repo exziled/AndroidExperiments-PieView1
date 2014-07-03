@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -23,11 +24,11 @@ public class MainActivity extends ActionBarActivity {
         final TextView textView = (TextView)findViewById(R.id.testText);
 
         PieSlice slice1 = (PieSlice)findViewById(R.id.ps1);
-        slice1.setOnClickListener(new View.OnClickListener() {
+        slice1.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View view) {
+            public boolean onTouch(View view, MotionEvent motionEvent) {
                 textView.setText("Slice 1");
-
+                return true;
             }
         });
 
