@@ -169,12 +169,12 @@ public class PieSlice extends View {
                 case MotionEvent.ACTION_DOWN:
                     mPaintSlice.setColor(Color.BLUE);
                     this.invalidate();
-                    return this.callOnClick();
                     //return true;
                 case MotionEvent.ACTION_MOVE:
                     return true;
                 case MotionEvent.ACTION_UP:
                     mPaintSlice.setColor(Color.GREEN);
+                    this.performClick();
                     this.invalidate();
                     return true;
                 default:

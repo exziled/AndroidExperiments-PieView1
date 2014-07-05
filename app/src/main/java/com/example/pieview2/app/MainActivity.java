@@ -24,11 +24,11 @@ public class MainActivity extends ActionBarActivity {
         final TextView textView = (TextView)findViewById(R.id.testText);
 
         PieSlice slice1 = (PieSlice)findViewById(R.id.ps1);
-        slice1.setOnTouchListener(new View.OnTouchListener() {
+        slice1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public void onClick(View view) {
                 textView.setText("Slice 1");
-                return true;
+
             }
         });
 
