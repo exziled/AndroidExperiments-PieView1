@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.RectF;
@@ -189,10 +190,17 @@ public class PieSlice extends View {
     protected void onDraw(Canvas canvas) {
         //Log.v("PieSlice", String.format("Called Draw on %d", sliceId));
         int padding = 10;
+        int inner = 200;
         RectF rect = new RectF(padding, padding, this.getMeasuredHeight() - padding, this.getMeasuredWidth() - padding);
+        RectF rectInner = new RectF(inner, inner, this.getMeasuredHeight() - inner, this.getMeasuredWidth() - inner);
+        //canvas.drawArc(rectInner, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
 
-        canvas.drawArc(rect, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
 
+        Path path = new Path();
+        path.arcTo(rectInner, mStartAngle * -1, mStartAngle - mEndAngle, true);
+        path.arcTo(rect, mEndAngle * -1, (mStartAngle - mEndAngle) * -1);
+        path.close();
+        canvas.drawPath(path, mPaintSlice);
 
     }
 }

@@ -34,6 +34,16 @@
             android:layout_height="match_parent"
             android:id="@+id/ps3"/>
 
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps4"/>
+
+        <com.example.pieview2.app.PieSlice
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/ps5"/>
+
 
     </com.example.pieview2.app.PieLayout>
 
