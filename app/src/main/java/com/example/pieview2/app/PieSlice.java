@@ -21,6 +21,10 @@ public class PieSlice extends View {
     private float mStartAngle;
     private float mEndAngle;
 
+    private int mRadius;
+    private int mPadding = 10;
+    private int mRadiusCenter = 100;
+
     private Triangle mBounds;
     private Paint mPaintSlice = new Paint();
     private Paint mPaintText = new Paint();
@@ -130,6 +134,8 @@ public class PieSlice extends View {
                                 radius - (float)(radius * Math.sin(Math.toRadians(mEndAngle))));
         mBounds = new Triangle(p0, p1, p2);
 
+        mRadius = this.getMeasuredWidth()/2;
+
         //Log.v(this.toString(), mBounds.toString());
 
         mPaintSlice.setColor(Color.GREEN);
@@ -189,10 +195,10 @@ public class PieSlice extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         //Log.v("PieSlice", String.format("Called Draw on %d", sliceId));
-        int padding = 10;
-        int inner = 200;
-        RectF rect = new RectF(padding, padding, this.getMeasuredHeight() - padding, this.getMeasuredWidth() - padding);
-        RectF rectInner = new RectF(inner, inner, this.getMeasuredHeight() - inner, this.getMeasuredWidth() - inner);
+        int innerRadius = mRadius - mRadiusCenter;
+
+        RectF rect = new RectF(mPadding, mPadding, this.getMeasuredHeight() - mPadding, this.getMeasuredWidth() - mPadding);
+        RectF rectInner = new RectF(innerRadius, innerRadius, this.getMeasuredHeight() - innerRadius, this.getMeasuredWidth() - innerRadius);
         //canvas.drawArc(rectInner, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
 
 
