@@ -1,5 +1,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingLeft="@dimen/activity_horizontal_margin"
@@ -12,7 +13,8 @@
         android:text="@string/hello_world"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/testText"/>
+        android:id="@+id/testText"
+        android:textColor="#ff000c" />
 
     <com.example.pieview2.app.PieLayout
         android:layout_width="wrap_content"
@@ -22,29 +24,57 @@
         <com.example.pieview2.app.PieSlice
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-        android:id="@+id/ps1"/>
+            android:id="@+id/ps1"
+            custom:sliceBgColor="#ff000c"
+            custom:sliceTapColor="#00ff0c"/>
 
         <com.example.pieview2.app.PieSlice
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ps2"/>
+            android:id="@+id/ps2"
+            custom:sliceBgColor="#ff000c"
+            custom:sliceTapColor="#00ff0c"/>
 
         <com.example.pieview2.app.PieSlice
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ps3"/>
+            android:id="@+id/ps3"
+            custom:sliceBgColor="#ff000c"
+            custom:sliceTapColor="#00ff0c"/>
 
         <com.example.pieview2.app.PieSlice
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ps4"/>
+            android:id="@+id/ps4"
+            custom:sliceBgColor="#ff000c"
+            custom:sliceTapColor="#00ff0c"/>
 
         <com.example.pieview2.app.PieSlice
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/ps5"/>
+            android:id="@+id/ps5"
+            custom:sliceBgColor="#ff000c"
+            custom:sliceTapColor="#00ff0c"/>
 
 
     </com.example.pieview2.app.PieLayout>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Display"
+        android:id="@+id/display"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Hide"
+        android:id="@+id/hide"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.pieview2.app;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -9,23 +10,37 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroupOverlay;
 
 /**
  * Created by bcarlson on 6/22/14.
  */
 public class PieLayout extends ViewGroup {
-
+    private int mBgColor = Color.BLUE;
 
     public PieLayout(Context context) {
     super(context);
 }
 
     public PieLayout(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public PieLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PieLayout);
+        final int N = a.getIndexCount();
+
+        for(int i = 0; i < N; i++) {
+            int attr = a.getIndex(i);
+            switch(attr)
+            {
+                case R.styleable.PieLayout_pieBgColor:
+                    mBgColor = a.getColor(attr, 0);
+            }
+        }
+
     }
 
     @Override
@@ -61,19 +76,16 @@ public class PieLayout extends ViewGroup {
 
     }
 
-    public class PieLayoutClose extends View {
-        public PieLayoutClose (Context context){
-            super(context);
-        }
+    public int getBackgroundColor() {
+        return mBgColor;
+    }
 
-        public void onDraw(Canvas canvas) {
-            Paint paint = new Paint();
-            paint.setStyle(Paint.Style.FILL);
-            canvas.drawColor(Color.WHITE);
-            paint.setColor(Color.BLUE);
-            canvas.drawCircle(20, 20, 15, paint);
-        }
+    public void show() {
+        this.setVisibility(View.VISIBLE);
+    }
 
+    public void hide() {
+        this.setVisibility(View.GONE);
     }
 }
 

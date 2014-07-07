@@ -1,6 +1,7 @@
 package com.example.pieview2.app;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -25,6 +26,13 @@ public class PieSlice extends View {
     private int mPadding = 10;
     private int mRadiusCenter = 100;
 
+    private RectF mOuterRect;
+    private RectF mInnerRect;
+    private Path mArcPath;
+
+    private int mSliceColor = Color.BLACK;
+    private int mSliceTapColor = Color.YELLOW;
+
     private Triangle mBounds;
     private Paint mPaintSlice = new Paint();
     private Paint mPaintText = new Paint();
@@ -34,10 +42,24 @@ public class PieSlice extends View {
     public PieSlice(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PieSlice);
+
+        final int N = a.getIndexCount();
+        for (int i = 0; i < N; i++) {
+            int attr = a.getIndex(i);
+            switch(attr) {
+                case R.styleable.PieSlice_sliceBgColor:
+                    mSliceColor = a.getColor(i, 0);
+                    break;
+                case R.styleable.PieSlice_sliceTapColor:
+                    mSliceTapColor = a.getColor(i, 0);
+                    break;
+            }
+        }
     }
 
     public PieSlice(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public PieSlice(Context context) {
@@ -133,12 +155,16 @@ public class PieSlice extends View {
         PointF p2 = new PointF( radius + (float)(radius * Math.cos(Math.toRadians(mEndAngle))),
                                 radius - (float)(radius * Math.sin(Math.toRadians(mEndAngle))));
         mBounds = new Triangle(p0, p1, p2);
-
         mRadius = this.getMeasuredWidth()/2;
 
-        //Log.v(this.toString(), mBounds.toString());
 
-        mPaintSlice.setColor(Color.GREEN);
+        int innerRadius = mRadius - mRadiusCenter;
+        mOuterRect = new RectF(mPadding, mPadding, this.getMeasuredHeight() - mPadding, this.getMeasuredWidth() - mPadding);
+        mInnerRect = new RectF(innerRadius, innerRadius, this.getMeasuredHeight() - innerRadius, this.getMeasuredWidth() - innerRadius);
+
+        mArcPath = new Path();
+
+        mPaintSlice.setColor(mSliceColor);
         mPaintSlice.setAntiAlias(true);
 
         mPaintText.setColor(Color.BLACK);
@@ -174,13 +200,13 @@ public class PieSlice extends View {
         if (mBounds.isInside(new PointF(eventX, eventY))) {
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
-                    mPaintSlice.setColor(Color.BLUE);
+                    mPaintSlice.setColor(mSliceTapColor);
                     this.invalidate();
                     //return true;
                 case MotionEvent.ACTION_MOVE:
                     return true;
                 case MotionEvent.ACTION_UP:
-                    mPaintSlice.setColor(Color.GREEN);
+                    mPaintSlice.setColor(mSliceColor);
                     this.performClick();
                     this.invalidate();
                     return true;
@@ -194,19 +220,11 @@ public class PieSlice extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        //Log.v("PieSlice", String.format("Called Draw on %d", sliceId));
-        int innerRadius = mRadius - mRadiusCenter;
+        mArcPath.reset();
+        mArcPath.arcTo(mInnerRect, mStartAngle * -1, mStartAngle - mEndAngle, true);
+        mArcPath.arcTo(mOuterRect, mEndAngle * -1, (mStartAngle - mEndAngle) * -1);
+        mArcPath.close();
 
-        RectF rect = new RectF(mPadding, mPadding, this.getMeasuredHeight() - mPadding, this.getMeasuredWidth() - mPadding);
-        RectF rectInner = new RectF(innerRadius, innerRadius, this.getMeasuredHeight() - innerRadius, this.getMeasuredWidth() - innerRadius);
-        //canvas.drawArc(rectInner, mStartAngle * -1, mStartAngle - mEndAngle, true, mPaintSlice);
-
-
-        Path path = new Path();
-        path.arcTo(rectInner, mStartAngle * -1, mStartAngle - mEndAngle, true);
-        path.arcTo(rect, mEndAngle * -1, (mStartAngle - mEndAngle) * -1);
-        path.close();
-        canvas.drawPath(path, mPaintSlice);
-
+        canvas.drawPath(mArcPath, mPaintSlice);
     }
 }

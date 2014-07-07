@@ -23,6 +23,23 @@ public class MainActivity extends ActionBarActivity {
 
         final TextView textView = (TextView)findViewById(R.id.testText);
 
+        Button hideButton = (Button)findViewById(R.id.hide);
+        hideButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPieLayout.hide();
+            }
+        });
+
+        Button showButton = (Button)findViewById(R.id.display);
+        showButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mPieLayout.show();
+            }
+        });
+
+
         PieSlice slice1 = (PieSlice)findViewById(R.id.ps1);
         slice1.setOnClickListener(new View.OnClickListener() {
             @Override

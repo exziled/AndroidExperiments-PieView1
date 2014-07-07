@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="PieLayout">
+        <attr name="pieBgColor" format="color" />
+    </declare-styleable>
+
+    <declare-styleable name="PieSlice">
+        <attr name="sliceBgColor" format="color" />
+        <attr name="sliceTapColor" format="color" />
+    </declare-styleable>
+</resources>
