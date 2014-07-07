@@ -19,6 +19,7 @@
     <com.example.pieview2.app.PieLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:animateLayoutChanges="true"
         android:id="@+id/pieLayout">
 
         <com.example.pieview2.app.PieSlice

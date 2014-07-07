@@ -11,12 +11,18 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroupOverlay;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 
 /**
  * Created by bcarlson on 6/22/14.
  */
 public class PieLayout extends ViewGroup {
     private int mBgColor = Color.BLUE;
+
+    private boolean mVisible = true;
+    private Animation mVisibleAnimation;
+    private Animation mHideAnimation;
 
     public PieLayout(Context context) {
     super(context);
@@ -41,6 +47,11 @@ public class PieLayout extends ViewGroup {
             }
         }
 
+        mVisibleAnimation = new AlphaAnimation(0.0f, 1.0f);
+        mVisibleAnimation.setDuration(250);
+
+        mHideAnimation = new AlphaAnimation(1.0f, 0.0f);
+        mHideAnimation.setDuration(250);
     }
 
     @Override
@@ -81,10 +92,22 @@ public class PieLayout extends ViewGroup {
     }
 
     public void show() {
+        if (mVisible == true)
+            return;
+
+        this.startAnimation(mVisibleAnimation);
+        mVisible = true;
+
         this.setVisibility(View.VISIBLE);
     }
 
     public void hide() {
+        if (mVisible == false)
+            return;
+
+        this.startAnimation(mHideAnimation);
+        mVisible = false;
+
         this.setVisibility(View.GONE);
     }
 }
